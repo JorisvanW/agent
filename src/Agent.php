@@ -129,7 +129,7 @@ class Agent extends Mobile_Detect {
      */
     private function getConfigRules($configKeysToUse = [])
     {
-  		$config          = app(config('agent'));
+  		$config          = config('agent');
   		$addRulesFlatten = [];
   		
    		if (!is_null($config)) {
