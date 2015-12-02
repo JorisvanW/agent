@@ -7,7 +7,7 @@
     "authors": [
 	{
             "name": "Joris van Willigen",
-            "homepage": "http://jorisvanw.com"
+            "homepage": "https://jorisvanw.com"
         },
         {
             "name": "Jens Segers",
@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Jorisvanw\\Agent\\": "src/"
+            "JorisvanW\\Agent\\": "src/"
         }
     },
     "extra": {
