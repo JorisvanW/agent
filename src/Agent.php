@@ -127,7 +127,7 @@ class Agent extends Mobile_Detect {
      *
      * @return array
      */
-    private function getConfigRules($configKeysToUse = [], $rules)
+    private function getConfigRules($configKeysToUse = [])
     {
   		$config          = app(config('agent'));
   		$addRulesFlatten = [];
@@ -135,7 +135,7 @@ class Agent extends Mobile_Detect {
    		if (!is_null($config)) {
          	$addRules = array_intersect_key($config, array_flip((array) $configKeysToUse));
 
-       		array_walk_recursive($array, function ($x) use (&$addRulesFlatten) { $addRulesFlatten[] = $x; });
+       		array_walk_recursive($addRules, function ($x) use (&$addRulesFlatten) { $addRulesFlatten[] = $x; });
      	}
      	
     	return $addRulesFlatten;
