@@ -1,4 +1,4 @@
-<?php namespace Jenssegers\Agent;
+<?php namespace JorisvanW\Agent;
 
 use Illuminate\Support\ServiceProvider;
 

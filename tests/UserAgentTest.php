@@ -1,7 +1,7 @@
 <?php
 
 require 'vendor/mobiledetect/mobiledetectlib/tests/UserAgentTest.php';
-use Jenssegers\Agent\Agent;
+use JorisvanW\Agent\Agent;
 
 class UserAgentTestExtended extends UserAgentTest
 {

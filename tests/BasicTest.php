@@ -2,7 +2,7 @@
 
 require 'vendor/mobiledetect/mobiledetectlib/tests/BasicsTest.php';
 
-use Jenssegers\Agent\Agent;
+use JorisvanW\Agent\Agent;
 
 class BasicTestExtended extends BasicTest
 {
