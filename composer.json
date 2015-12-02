@@ -6,7 +6,7 @@
     "license" : "MIT",
     "authors": [
 	{
-            "name": "Joris van Willigen“
+            "name": "Joris van Willigen"
         },
         {
             "name": "Jens Segers",
@@ -25,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            “Jorisvanw\\Agent\\": "src/"
+            "Jorisvanw\\Agent\\": "src/"
         }
     },
     "extra": {
