@@ -1,7 +1,8 @@
-<?php namespace Jenssegers\Agent;
+<?php namespace JorisvanW\Agent;
 
 use BadMethodCallException;
 use Mobile_Detect;
+use Jaybizzle\CrawlerDetect\CrawlerDetect;
 
 class Agent extends Mobile_Detect {
 
@@ -57,7 +58,7 @@ class Agent extends Mobile_Detect {
         'Windows'           => 'Windows NT [VER]',
         'Windows NT'        => 'Windows NT [VER]',
         'OS X'              => 'OS X [VER]',
-        'BlackBerryOS'      => array('BlackBerry[\w]+/[VER]', 'BlackBerry.*Version/[VER]', 'Version/[VER]'),
+        'BlackBerryOS'      => ['BlackBerry[\w]+/[VER]', 'BlackBerry.*Version/[VER]', 'Version/[VER]'],
         'AndroidOS'         => 'Android [VER]',
         'ChromeOS'          => 'CrOS x86_64 [VER]',
 
@@ -83,7 +84,7 @@ class Agent extends Mobile_Detect {
         'Facebook'          => 'facebookexternalhit',
         'Twitter'           => 'Twitterbot',
     );
-
+    
     /**
      * Get all detection rules. These rules include the additional
      * platforms and browsers.
@@ -106,9 +107,38 @@ class Agent extends Mobile_Detect {
                 static::$additionalBrowsers, // NEW
                 static::$utilities
             );
+            
+    		// Add the own additional rules
+    		$configRules = $this->getConfigRules([
+                	'devices',
+                	'operatingSystems',
+                	'browsers',
+                	'properties'
+                ]);
+    		
+    		$rules = array_merge($rules, $this->mergeRules($configRules));
         }
 
         return $rules;
+    }
+    
+    /**
+     * Get the config rules to add.
+     *
+     * @return array
+     */
+    private function getConfigRules($configKeysToUse = [], $rules)
+    {
+  		$config          = app(config('agent'));
+  		$addRulesFlatten = [];
+  		
+   		if (!is_null($config)) {
+         	$addRules = array_intersect_key($config, array_flip((array) $configKeysToUse));
+
+       		array_walk_recursive($array, function ($x) use (&$addRulesFlatten) { $addRulesFlatten[] = $x; });
+     	}
+     	
+    	return $addRulesFlatten;
     }
 
     /**
@@ -198,8 +228,14 @@ class Agent extends Mobile_Detect {
         // MobileDetect will mostly detect Chrome as the browser.
         $rules = $this->mergeRules(
             static::$additionalBrowsers, // NEW
-            static::$browsers
+            static::$browsers,
+            $this->getConfigRules(['browsers'])
         );
+        
+        // Add the own additional rules
+    	//$configRules = $this->getConfigRules(['browsers']);
+    		
+   		//$rules = array_merge($rules, $this->mergeRules($configRules));
 
         return $this->findDetectionRulesAgainstUA($rules, $userAgent);
     }
@@ -215,7 +251,8 @@ class Agent extends Mobile_Detect {
         // Get platform rules
         $rules = $this->mergeRules(
             static::$operatingSystems,
-            static::$additionalOperatingSystems // NEW
+            static::$additionalOperatingSystems, // NEW
+            $this->getConfigRules(['operatingSystems'])
         );
 
         return $this->findDetectionRulesAgainstUA($rules, $userAgent);
@@ -234,7 +271,8 @@ class Agent extends Mobile_Detect {
             static::$additionalDevices, // NEW
             static::$phoneDevices,
             static::$tabletDevices,
-            static::$utilities
+            static::$utilities,
+            $this->getConfigRules(['devices'])
         );
 
         return $this->findDetectionRulesAgainstUA($rules, $userAgent);
@@ -276,7 +314,8 @@ class Agent extends Mobile_Detect {
         $rules = $this->mergeRules(
             static::$robots, // NEW
             array(static::$utilities['Bot']),
-            array(static::$utilities['MobileBot'])
+            array(static::$utilities['MobileBot']),
+            $this->getConfigRules(['robots'])
         );
 
         return $this->findDetectionRulesAgainstUA($rules, $userAgent);
@@ -294,7 +333,8 @@ class Agent extends Mobile_Detect {
         $rules = $this->mergeRules(
             array(static::$utilities['Bot']),
             array(static::$utilities['MobileBot']),
-            static::$robots // NEW
+            static::$robots, // NEW
+            $this->getConfigRules(['robots'])
         );
 
         foreach ($rules as $regex)
@@ -302,8 +342,11 @@ class Agent extends Mobile_Detect {
             // Check for match
             if ($this->match($regex, $userAgent)) return true;
         }
-
-        return false;
+        
+		// Added CrawlerDetect for a more complete detection.
+		$CrawlerDetect = new CrawlerDetect;	
+		
+		return $CrawlerDetect->isCrawler($userAgent);
     }
 
     /**
@@ -321,7 +364,8 @@ class Agent extends Mobile_Detect {
             // TODO: why is mergeRules not working here?
             parent::$properties = array_merge(
                 parent::$properties,
-                static::$additionalProperties
+                static::$additionalProperties,
+                $this->getConfigRules(['properties'])
             );
         }
 
