@@ -2,7 +2,8 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class AgentServiceProvider extends ServiceProvider {
+class AgentServiceProvider extends ServiceProvider
+{
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -16,9 +17,7 @@ class AgentServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/../resources/config/agent.php' => config_path('agent.php')
-        ], 'config');
+        //
     }
 
     /**
@@ -26,11 +25,8 @@ class AgentServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-    
-        $this->app['agent'] = $this->app->share(function ($app)
-        {
+        $this->app->singleton('agent', function ($app) {
             return new Agent($app['request']->server->all());
         });
     }
-
 }
