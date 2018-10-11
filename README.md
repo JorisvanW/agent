@@ -15,7 +15,7 @@ Installation
 Install using composer:
 
 ```bash
-composer require jenssegers/agent
+composer require jorisvanw/agent
 ```
 
 Laravel (optional)
@@ -24,13 +24,13 @@ Laravel (optional)
 Add the service provider in `app/config/app.php`:
 
 ```php
-'Jenssegers\Agent\AgentServiceProvider',
+'JorisvanW\Agent\AgentServiceProvider',
 ```
 
 And add the Agent alias to `app/config/app.php`:
 
 ```php
-'Agent' => 'Jenssegers\Agent\Facades\Agent',
+'Agent' => 'JorisvanW\Agent\Facades\Agent',
 ```
 
 Basic Usage
@@ -39,7 +39,7 @@ Basic Usage
 Start by creating an `Agent` instance (or use the `Agent` Facade if you are using Laravel):
 
 ```php
-use Jenssegers\Agent\Agent;
+use JorisvanW\Agent\Agent;
 
 $agent = new Agent();
 ```
